@@ -1,0 +1,88 @@
+server:
+  port: 8081
+
+
+spring:
+  application:
+    name: USER-SERVICE
+
+  datasource:
+    url: jdbc:mysql://localhost:3306/hotel_userservices
+    username: root
+    password:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQLDialect
+
+        #add or import the config-server file of application which is uploaded on github
+
+  config:
+    import: configserver:http://localhost:8085
+
+
+#below code id comping fro github application.yml file
+
+#eureka:
+#  instance:
+#    prefer-ip-address: true
+#  client:
+#    fetch-registry: true
+#    service-url:
+#      defaultZone: http://localhost:8761/eureka/
+#    register-with-eureka: true
+management:
+  health:
+    circuitbreakers:
+      enabled: true  # Enable health information about circuit breakers
+    endpoints:
+      web:
+        exposure:
+          include: health  # Ensure the health endpoint is exposed
+  endpoint:
+    health:
+      show-details: always
+
+
+resilience4j:
+  circuitbreaker:
+   instances:
+      ratingHotelBreaker:
+        register-health-indicator: true
+        event-consumer-buffer-size: 10
+        failure-rate-threshold: 50
+        minimum-number-of-calls: 5
+        automatic-transition-from-open-to-half-open-enabled: true
+        wait-duration-in-open-state: 7s
+        permitted-number-of-calls-in-half-open-state: 3
+        sliding-window-size: 10
+        sliding-window-type: COUNT_BASED
+
+        #        reTry of
+
+  retry:
+      instances:
+        ratingHotelBreaker:
+          max-attempts: 3
+          wait-duration: 5s
+
+            #            using the rate limiter for managing the performance and like securtiy from hacker
+#  and also need to download Jmeter for test the performace from googl
+
+  ratelimiter:
+    instances:
+      userRateLimiter:
+        limit-refresh-period: 4s
+        limit-for-period: 2
+        timeout-duration: 2s
+
+
+
+
+
+

@@ -1,0 +1,17 @@
+server:
+  port: 8085
+
+spring:
+  application:
+    name: CONFIG-SERVER
+
+  cloud:
+    config:
+      server:
+        git:
+          uri: https://github.com/Muneebqureshi90/hotel-microservice-config-server
+          # Optionally add branch, search paths, and other properties
+          # search-paths: subdir1,subdir2
+          # default-label: main
+          clone-on-start: true
+

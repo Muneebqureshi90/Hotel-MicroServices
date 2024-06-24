@@ -1,0 +1,12 @@
+server:
+  port: 8083
+
+spring:
+  data:
+    mongodb:
+      uri: mongodb://localhost:27017/hotel_ratingservice
+
+      #add or import the config-server file of application which is uploaded on github
+
+  config:
+    import: configserver:http://localhost:8085
